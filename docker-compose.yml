@@ -1,0 +1,111 @@
+services:
+
+  # USERS SERVICE
+  
+  users-service:
+    build: ./backend/users-service
+    container_name: secureapigateway-users-service
+    ports:
+      - "${USERS_SERVICE_PORT}:3001"
+    env_file:
+      - ./.env
+    environment:
+      - PORT=${USERS_SERVICE_PORT}
+      - MONGO_URL=${MONGO_USERS_URL}
+    networks:
+      - secure-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${USERS_SERVICE_PORT}/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # PRODUCTS SERVICE
+ 
+  products-service:
+    build: ./backend/products-service
+    container_name: secureapigateway-products-service
+    ports:
+      - "${PRODUCTS_SERVICE_PORT}:3002"
+    env_file:
+      - ./.env
+    environment:
+      - PORT=${PRODUCTS_SERVICE_PORT}
+      - MONGO_URL=${MONGO_PRODUCTS_URL}
+    networks:
+      - secure-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PRODUCTS_SERVICE_PORT}/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  
+  # ORDERS SERVICE
+ 
+  orders-service:
+    build: ./backend/orders-service
+    container_name: secureapigateway-orders-service
+    ports:
+      - "${ORDERS_SERVICE_PORT}:3003"
+    env_file:
+      - ./.env
+    environment:
+      - PORT=${ORDERS_SERVICE_PORT}
+      - MONGO_URL=${MONGO_ORDERS_URL}
+    networks:
+      - secure-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${ORDERS_SERVICE_PORT}/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # API GATEWAY
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: secureapigateway-api-gateway
+    ports:
+      - "${API_GATEWAY_PORT}:3000"
+    depends_on:
+      users-service:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
+      orders-service:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      - PORT=${API_GATEWAY_PORT}
+      - USERS_SERVICE=${USERS_SERVICE}
+      - PRODUCTS_SERVICE=${PRODUCTS_SERVICE}
+      - ORDERS_SERVICE=${ORDERS_SERVICE}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - secure-net
+    restart: always
+
+ 
+  # FRONTEND 
+
+  frontend:
+    build: ./frontend
+    container_name: secureapigateway-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - secure-net
+    restart: always
+
+
+# Docker Network
+
+networks:
+  secure-net:
+    driver: bridge

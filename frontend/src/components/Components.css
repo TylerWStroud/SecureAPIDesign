@@ -1,0 +1,234 @@
+.section-container {
+  min-width: 40rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: background 0.3s ease;
+}
+
+.light .section-container {
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ==== Containers ==== */
+.item-container {
+  border: 1px solid rgba(120,120,120,0.3);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  text-align: left;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.item-container::-webkit-scrollbar {
+  width: 6px;
+}
+.item-container::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 10px;
+}
+
+/* ==== Cards ==== */
+.user-card,
+.product-card,
+.order-card {
+  background: rgb(61, 61, 61); 
+  backdrop-filter: blur(4px);
+  padding: 0.8rem 1.2rem;
+  margin-bottom: 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.user-card:hover,
+.product-card:hover,
+.order-card:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+.light .user-card,
+.light .product-card,
+.light .order-card {
+  background: #fff;
+  border: 1px solid #ddd;
+}
+.light .user-card:hover,
+.light .product-card:hover,
+.light .order-card:hover {
+  background: #f9f9f9;
+}
+
+/* ==== Forms ==== */
+form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+input, select {
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #777;
+  background: #222;
+  color: white;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+input:focus, select:focus {
+  border-color: #0078ff;
+  outline: none;
+}
+.light input, .light select {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+}
+
+/* ==== Login ==== */
+.login-container {
+  border: 2px solid rgba(255,255,255,0.2);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 22rem;
+  text-align: left;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  margin-top: 10rem;
+}
+.light .login-container {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.error-message {
+  color: #ff5555;
+  font-size: 0.9rem;
+}
+
+/* From Uiverse.io by andrew-demchenk0 */
+.button {
+  all: unset;
+  --main-focus: #2d8cf0;
+  --font-color: #dedede;
+  --bg-color-sub: #222;
+  --bg-color: #323232;
+  --main-color: #dedede;
+  position: relative;
+  width: 150px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  background-color: var(--bg-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.button,
+.button__icon,
+.button__text {
+  transition: all 0.3s ease;
+}
+
+.button .button__text {
+  transform: translateX(33px);
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+.button .button__icon {
+  position: absolute;
+  transform: translateX(111px); 
+  height: 100%;
+  width: 39px;
+  background-color: var(--bg-color-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button .svg {
+  width: 20px;
+  fill: var(--main-color);
+}
+
+.button:hover {
+  background: var(--bg-color);
+}
+
+.button:hover .button__text {
+  color: transparent;
+}
+
+.button:hover .button__icon {
+  width: 150px;
+  transform: translateX(0);
+}
+
+.button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px var(--main-color);
+}
+
+.refresh-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.section-container {
+  position: relative; 
+  padding-top: 3rem;  
+}
+
+/* === Simple Delete Button === */
+button.delete-btn {
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  align-self: flex-end;
+  margin-top: 10px;
+}
+
+button.delete-btn:hover {
+  background: #ff4b47;
+  transform: translateY(-2px);
+}
+
+button.delete-btn:active {
+  transform: translateY(0);
+}
+
+button.delete-btn:focus {
+  outline: none;
+}
