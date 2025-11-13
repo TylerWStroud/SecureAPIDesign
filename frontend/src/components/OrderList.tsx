@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { orderService, productService } from "../services/api";
+import { orderService, productService, type Product, type Order } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-interface Order {
-  _id?: string;
-  id?: string;
-  orderNumber?: string;
-  productId: string;
-  productName?: string;
-  status: string;
-}
+// interface Order {
+//   _id?: string;
+//   id?: string;
+//   orderNumber?: string;
+//   productId: string;
+//   productName?: string;
+//   status: string;
+// }
 
-interface Product {
-  _id: string;
-  name: string;
-}
 
 export const OrderList: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [status, setStatus] = useState("pending");
+  const [status, setStatus] = useState<"pending" | "processing" | "completed">("pending");
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -139,7 +135,7 @@ export const OrderList: React.FC = () => {
 
         <label>
           Status:
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select value={status} onChange={(e) => setStatus(e.target.value as "pending" | "processing" | "completed")}>
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
             <option value="completed">Completed</option>
@@ -154,13 +150,13 @@ export const OrderList: React.FC = () => {
       <div className="item-container">
         {orders.length > 0 ? (
           orders.map((o) => (
-            <div key={o._id || o.id} className="order-card">
+            <div key={o._id} className="order-card">
               <h3>{o.orderNumber || `Order #${o._id}`}</h3>
               <p>Product: {o.productName || o.productId}</p>
               <p>Status: {o.status}</p>
               <button
                 className="delete-btn"
-                onClick={() => confirmDelete(p._id || p.id)}
+                onClick={() => confirmDelete(o._id)}
               >
                 Delete
               </button>

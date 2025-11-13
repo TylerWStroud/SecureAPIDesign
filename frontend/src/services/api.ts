@@ -8,7 +8,7 @@ making it a powerful tool for interacting with web APIs.
 */
 import axios from "axios";
 
-// Base URL for your REST API
+// Base URL for REST API
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Reusable axios instance
@@ -74,6 +74,33 @@ export interface Order {
   status: "pending" | "processing" | "completed";
 }
 
+// Health status model
+export interface HealthStatus {
+  status: string;
+  timestamp: string;
+  uptime: string;
+  responseTime?: string;
+  checks?: {
+    database?:{
+      status: string;
+      state?: string;
+      name?: string;
+      ping?: string;
+      error?: string;
+    };
+    memory?: {
+      status: string;
+      usage?: {
+        rss: number;
+        heapUsed: number;
+        heapTotal: number;
+        external: number;
+      };
+      unit?: string;
+    };
+  };
+}
+
 // === API SERVICES ===
 // --- Users ---
 export const userService = {
@@ -102,8 +129,5 @@ export const orderService = {
 
 // --- Health Check ---
 export const healthService = {
-  checkHealth: () =>
-    api.get<ApiResponse<{ status: string; timestamp?: string; uptime?: string }>>(
-      "/health"
-    ),
+  checkHealth: () => api.get<HealthStatus>("/health"),
 };

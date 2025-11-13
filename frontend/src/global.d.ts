@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 
-// --- Allow importing React, CSS, and assets ---
-declare module "react";
+// --- Allow importing CSS and assets ---
 declare module "*.css";
 declare module "*.scss";
 declare module "*.png";

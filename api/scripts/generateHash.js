@@ -1,10 +1,10 @@
 /**
  * Generates a bcrypt hash for a given password string.
  * Usage (PowerShell or terminal):
- *   node scripts/generateHash.js yourPasswordHere
+ *   node api/scripts/generateHash.js yourPasswordHere
  *
  * Example:
- *   node scripts/generateHash.js admin123
+ *   node api/scripts/generateHash.js admin123
  */
 
 import bcrypt from "bcryptjs";
@@ -19,7 +19,7 @@ async function generateHash() {
 
   if (!password) {
     console.error(
-      "Please provide a password.\nUsage: node scripts/generateHash.js <password>"
+      "Please provide a password.\nUsage: node api/scripts/generateHash.js <password>"
     );
     process.exit(1);
   }

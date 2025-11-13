@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { productService } from "../services/api";
+import { productService, type Product } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-interface Product {
-  _id?: string;
-  id?: string;
-  name: string;
-  price: number;
-  stock?: number;
-  description?: string;
-}
+// interface Product {
+//   _id?: string;
+//   id?: string;
+//   name: string;
+//   price: number;
+//   stock?: number;
+//   description?: string;
+// }
 
 export const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -154,14 +154,14 @@ export const ProductList: React.FC = () => {
 
       <div className="item-container">
         {products.map((p) => (
-          <div key={p._id || p.id} className="product-card">
+          <div key={p._id || p._id} className="product-card">
             <h3>{p.name}</h3>
             <p>${p.price}</p>
             {p.stock !== undefined && <p>Stock: {p.stock}</p>}
             {p.description && <p>{p.description}</p>}
             <button
               className="delete-btn"
-              onClick={() => confirmDelete(p._id || p.id)}
+              onClick={() => confirmDelete(p._id || p._id)}
             >
               Delete
             </button>

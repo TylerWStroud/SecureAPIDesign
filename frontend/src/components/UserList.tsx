@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { userService } from "../services/api";
+import { userService, type User } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-interface User {
-  _id?: string;
-  id?: string;
-  username: string;
-  roles?: string[];
-}
+// interface User {
+//   _id?: string;
+//   id?: string;
+//   username: string;
+//   roles?: string[];
+// }
 
 export const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -69,7 +69,7 @@ export const UserList: React.FC = () => {
       <div className="item-container">
         {users.length > 0 ? (
           users.map((user) => (
-            <div key={user._id || user.id} className="user-card">
+            <div key={user._id || user._id} className="user-card">
               <h3>{user.username}</h3>
               {user.roles && <p>Roles: {user.roles.join(", ")}</p>}
             </div>

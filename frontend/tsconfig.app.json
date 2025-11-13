@@ -7,7 +7,7 @@
     "jsx": "react-jsx",
 
     /* Typing */
-    "types": ["vite/client", "react", "react-dom"],
+    "types": ["vite/client"],
     "skipLibCheck": true,
 
     /* Bundler mode */
