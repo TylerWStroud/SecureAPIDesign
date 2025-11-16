@@ -71,6 +71,7 @@ export const UserList: React.FC = () => {
           users.map((user) => (
             <div key={user._id || user._id} className="user-card">
               <h3>{user.username}</h3>
+              {user._id && <p>User ID: {user._id}</p>}
               {user.roles && <p>Roles: {user.roles.join(", ")}</p>}
             </div>
           ))

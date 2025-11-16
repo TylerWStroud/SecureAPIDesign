@@ -103,6 +103,10 @@ h1 {
   background-color: rgba(255,255,255,0.1);
 }
 
+.light .theme-toggle button:hover{
+  background-color: rgba(0,0,0,0.1)
+}
+
 @media screen and (max-width: 800px) {
   .theme-toggle {
     position: relative;
@@ -114,14 +118,17 @@ h1 {
 button.logout {
   margin-top: 1rem;
   border-radius: 6px;
-  background: #ff5252;
+  background: #dd3131;
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
   font-weight: 600;
+  margin-bottom: 3rem;
   transition: background 0.25s ease;
 }
 
 button.logout:hover {
   background: #ff7777;
+  text-shadow: 1px 1px 1px rgba(0,0,0,1);
 }
+

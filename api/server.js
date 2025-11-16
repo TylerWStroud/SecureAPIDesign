@@ -25,7 +25,7 @@ app.get("/health", authenticate, requireRole("admin"), async (_req, res) => {
   const startTime = Date.now();
   const healthStatus = {
     status: "healthy",
-    timeStamp: new Date().toISOString(),
+    timestamp: new Date().toISOString(),
     uptime: `${Math.round(process.uptime())}s`,
     checks: {},
   };

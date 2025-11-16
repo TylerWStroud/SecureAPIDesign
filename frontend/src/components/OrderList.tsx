@@ -22,6 +22,7 @@ export const OrderList: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // For custom modal
   const [showConfirm, setShowConfirm] = useState(false);
@@ -31,6 +32,10 @@ export const OrderList: React.FC = () => {
     try {
       const res = await orderService.getOrders();
       setOrders(res.data.data || []);
+      // Check if user is admin from the response
+      if (res.data.user && res.data.user.roles) {
+        setIsAdmin(res.data.user.roles.includes("admin"));
+      }
       setError(null);
     } catch {
       setError("Failed to fetch orders.");
@@ -117,35 +122,45 @@ export const OrderList: React.FC = () => {
         <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
       )}
 
-      <form onSubmit={createOrder} className="order-form">
-        <label>
-          Product:
-          <select
-            value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
-          >
-            <option value="">-- Select a Product --</option>
-            {products.map((p) => (
-              <option key={p._id} value={p._id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </label>
+      {!isAdmin && (
+        <div style={{ padding: "1rem", borderRadius: "4px", marginBottom: "1rem" }}>
+          <p style={{ margin: 0 }}>
+            You can place orders from the Products tab by clicking "Order Now" on any product.
+          </p>
+        </div>
+      )}
 
-        <label>
-          Status:
-          <select value={status} onChange={(e) => setStatus(e.target.value as "pending" | "processing" | "completed")}>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="completed">Completed</option>
-          </select>
-        </label>
+      {isAdmin && (
+        <form onSubmit={createOrder} className="order-form">
+          <label>
+            Product:
+            <select
+              value={selectedProduct}
+              onChange={(e) => setSelectedProduct(e.target.value)}
+            >
+              <option value="">-- Select a Product --</option>
+              {products.map((p) => (
+                <option key={p._id} value={p._id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <button type="submit" disabled={creating}>
-          {creating ? "Creating..." : "Create Order"}
-        </button>
-      </form>
+          <label>
+            Status:
+            <select value={status} onChange={(e) => setStatus(e.target.value as "pending" | "processing" | "completed")}>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="completed">Completed</option>
+            </select>
+          </label>
+
+          <button type="submit" disabled={creating}>
+            {creating ? "Creating..." : "Create Order"}
+          </button>
+        </form>
+      )}
 
       <div className="item-container">
         {orders.length > 0 ? (
@@ -153,13 +168,17 @@ export const OrderList: React.FC = () => {
             <div key={o._id} className="order-card">
               <h3>{o.orderNumber || `Order #${o._id}`}</h3>
               <p>Product: {o.productName || o.productId}</p>
+              {o.price !== undefined && <p>Price: ${o.price.toFixed(2)}</p>}
+              {isAdmin && <p>User ID: {o.userId}</p>}
               <p>Status: {o.status}</p>
-              <button
-                className="delete-btn"
-                onClick={() => confirmDelete(o._id)}
-              >
-                Delete
-              </button>
+              {isAdmin && (
+                <button
+                  className="delete-btn"
+                  onClick={() => confirmDelete(o._id)}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           ))
         ) : (

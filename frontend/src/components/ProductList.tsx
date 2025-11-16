@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { productService, type Product } from "../services/api";
+import { productService, orderService, type Product } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
@@ -22,6 +22,11 @@ export const ProductList: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [orderingProductId, setOrderingProductId] = useState<string | null>(
+    null
+  );
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // For the confirmation modal
   const [showConfirm, setShowConfirm] = useState(false);
@@ -32,6 +37,10 @@ export const ProductList: React.FC = () => {
     try {
       const res = await productService.getProducts();
       setProducts(res.data.data || []);
+      // Check if user is admin from the response
+      if (res.data.user && res.data.user.roles) {
+        setIsAdmin(res.data.user.roles.includes("admin"));
+      }
       setError(null);
     } catch {
       setError("Failed to load products.");
@@ -94,6 +103,35 @@ export const ProductList: React.FC = () => {
     }
   };
 
+  const handleOrderNow = async (productId: string, productName: string) => {
+    setOrderingProductId(productId);
+    setWarning(null);
+    setSuccessMessage(null);
+    setError(null);
+    try {
+      await orderService.createOrder({ productId, status: "pending" });
+      setSuccessMessage(`Order placed successfully for ${productName}!`);
+      // Refresh products to update stock count
+      await fetchProducts();
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err: any) {
+      console.error("Order creation error:", err);
+      if (err.response?.status === 403) {
+        setWarning("You do not have permission to create orders.");
+      } else if (
+        err.response?.status === 400 &&
+        err.response?.data?.error === "Product is out of stock"
+      ) {
+        setError("This product is out of stock!");
+      } else {
+        setError("Failed to place order.");
+      }
+    } finally {
+      setOrderingProductId(null);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -109,62 +147,136 @@ export const ProductList: React.FC = () => {
         </div>
       </div>
 
+      {successMessage && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div
+              style={{
+                color: "green",
+                marginBottom: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              {successMessage}
+            </div>
+          </div>
+        </div>
+      )}
       {warning && (
-        <div style={{ color: "orange", marginBottom: "1rem" }}>{warning}</div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div style={{ color: "orange", marginBottom: "1rem" }}>
+              {warning}
+            </div>
+          </div>
+        </div>
       )}
       {error && (
-        <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
+          </div>
+        </div>
       )}
 
-      <form onSubmit={createProduct} className="form-inline">
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={price}
-          onChange={(e) =>
-            setPrice(e.target.value ? parseFloat(e.target.value) : "")
-          }
-          required
-        />
-        <input
-          type="number"
-          placeholder="Stock"
-          value={stock}
-          onChange={(e) =>
-            setStock(e.target.value ? parseInt(e.target.value) : "")
-          }
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button type="submit" disabled={creating}>
-          {creating ? "Adding..." : "Add Product"}
-        </button>
-      </form>
+      {isAdmin && (
+        <form onSubmit={createProduct} className="form-inline">
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={price}
+            onChange={(e) =>
+              setPrice(e.target.value ? parseFloat(e.target.value) : "")
+            }
+            required
+          />
+          <input
+            type="number"
+            placeholder="Stock"
+            value={stock}
+            onChange={(e) =>
+              setStock(e.target.value ? parseInt(e.target.value) : "")
+            }
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <button type="submit" disabled={creating}>
+            {creating ? "Adding..." : "Add Product"}
+          </button>
+        </form>
+      )}
 
       <div className="item-container">
         {products.map((p) => (
           <div key={p._id || p._id} className="product-card">
             <h3>{p.name}</h3>
-            <p>${p.price}</p>
-            {p.stock !== undefined && <p>Stock: {p.stock}</p>}
+            <p>${p.price.toFixed(2)}</p>
+            {p.stock !== undefined && (
+              <p
+                style={{
+                  color: p.stock === 0 ? "red" : "inherit",
+                  fontWeight: p.stock === 0 ? "bold" : "normal",
+                }}
+              >
+                Stock: {p.stock} {p.stock === 0 && "(OUT OF STOCK)"}
+              </p>
+            )}
             {p.description && <p>{p.description}</p>}
-            <button
-              className="delete-btn"
-              onClick={() => confirmDelete(p._id || p._id)}
+            <div
+              style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}
             >
-              Delete
-            </button>
+              {!isAdmin && (
+                <button
+                  className="order-btn"
+                  onClick={() => handleOrderNow(p._id!, p.name)}
+                  disabled={
+                    orderingProductId === p._id ||
+                    (p.stock !== undefined && p.stock <= 0)
+                  }
+                  style={{
+                    backgroundColor:
+                      p.stock !== undefined && p.stock <= 0
+                        ? "#ccc"
+                        : "#4CAF50",
+                    color: "white",
+                    border: "none",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "4px",
+                    cursor:
+                      orderingProductId === p._id ||
+                      (p.stock !== undefined && p.stock <= 0)
+                        ? "not-allowed"
+                        : "pointer",
+                    flex: 1,
+                  }}
+                >
+                  {orderingProductId === p._id
+                    ? "Ordering..."
+                    : p.stock !== undefined && p.stock <= 0
+                    ? "Out of Stock"
+                    : "Order Now"}
+                </button>
+              )}
+              {isAdmin && (
+                <button
+                  className="delete-btn"
+                  onClick={() => confirmDelete(p._id || p._id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

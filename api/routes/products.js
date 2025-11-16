@@ -7,9 +7,9 @@ import { requireRole } from "../middleware/requireRole.js";
 const router = Router();
 
 // GET /api/products (auth required)
-router.get("/", authenticate, async (_req, res) => {
+router.get("/", authenticate, async (req, res) => {
   const products = await Product.find();
-  res.json({ data: products });
+  res.json({ data: products, user: req.user });
 });
 
 // POST /api/products (admin only)

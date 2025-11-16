@@ -1,21 +1,29 @@
 .section-container {
-  min-width: 40rem;
+  min-width: auto;
   padding: 1rem;
   border-radius: 10px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(6px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   transition: background 0.3s ease;
+}
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
 }
 
 .light .section-container {
   background: #fafafa;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* ==== Containers ==== */
 .item-container {
-  border: 1px solid rgba(120,120,120,0.3);
+  border: 1px solid rgba(120, 120, 120, 0.3);
   border-radius: 10px;
   padding: 1rem;
   margin-top: 1rem;
@@ -37,22 +45,22 @@
 .user-card,
 .product-card,
 .order-card {
-  background: rgb(61, 61, 61); 
+  background: rgb(61, 61, 61);
   backdrop-filter: blur(4px);
   padding: 0.8rem 1.2rem;
   margin-bottom: 0.8rem;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .user-card:hover,
 .product-card:hover,
 .order-card:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
 }
 
@@ -76,7 +84,8 @@ form {
   flex-wrap: wrap;
 }
 
-input, select {
+input,
+select {
   padding: 0.5rem 0.7rem;
   border-radius: 6px;
   border: 1px solid #777;
@@ -84,11 +93,13 @@ input, select {
   color: white;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
-input:focus, select:focus {
+input:focus,
+select:focus {
   border-color: #0078ff;
   outline: none;
 }
-.light input, .light select {
+.light input,
+.light select {
   background: #fff;
   color: #222;
   border: 1px solid #ccc;
@@ -96,20 +107,20 @@ input:focus, select:focus {
 
 /* ==== Login ==== */
 .login-container {
-  border: 2px solid rgba(255,255,255,0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   padding: 2rem;
   border-radius: 12px;
   width: 22rem;
   text-align: left;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   margin-top: 10rem;
 }
 .light .login-container {
   background: #ffffff;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .login-form {
@@ -162,7 +173,7 @@ input:focus, select:focus {
 
 .button .button__icon {
   position: absolute;
-  transform: translateX(111px); 
+  transform: translateX(111px);
   height: 100%;
   width: 39px;
   background-color: var(--bg-color-sub);
@@ -201,10 +212,40 @@ input:focus, select:focus {
   z-index: 10;
 }
 
-.section-container {
-  position: relative; 
-  padding-top: 3rem;  
+/* === Delete Confirm Screen === */
+.modal-overlay{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+  z-index: 50;
 }
+
+.modal{
+  position: sticky;
+  background: rgba(50, 50, 50, 0.9);
+  height: fit-content;
+  top: 30%;
+  padding: 2rem;
+  border: 1px solid white;
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.light .modal{
+  background: rgba(200,200,200,0.8)
+}
+
+.modal-actions{
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
 
 /* === Simple Delete Button === */
 button.delete-btn {
@@ -231,4 +272,29 @@ button.delete-btn:active {
 
 button.delete-btn:focus {
   outline: none;
+}
+
+
+/* === Health Check Setion === */
+.health-info{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.health-info-card{
+  border: 1px white solid;
+  padding: 2rem;
+  margin: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* === MOBILE STYLING === */
+@media (max-width: 740px) {
+  .section-header {
+    padding-bottom: 30px;
+  }
+
+  .refresh-wrapper {
+    position: relative;
+  }
 }

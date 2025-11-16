@@ -52,6 +52,7 @@ export const HealthCheck: React.FC = () => {
       {/* conditionally renders status styling dependening on status health */}
       {health && (
         <div className="health-info">
+          <div className="health-info-card">
           <p>
             <strong>Status: </strong>
             <span
@@ -75,10 +76,11 @@ export const HealthCheck: React.FC = () => {
               <strong>Response Time: </strong> {health.responseTime}
             </p>
           )}
+          </div>
 
           {/* conditionally renders Database information */}
           {health.checks?.database && (
-            <div className="health-check-item">
+            <div className="health-info-card">
               <h3>Database</h3>
               <p>Status: {health.checks.database.status}</p>
               {health.checks.database.state && (
@@ -97,7 +99,7 @@ export const HealthCheck: React.FC = () => {
 
           {/*  conditionally renders memory heap usage  */}
           {health.checks?.memory && (
-            <div className="health-check-item">
+            <div className="health-info-card">
               <h3>Memory</h3>
               <p>Status: {health.checks.memory.status}</p>
               {health.checks.memory.usage && (

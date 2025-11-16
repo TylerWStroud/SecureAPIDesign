@@ -45,6 +45,11 @@ api.interceptors.response.use(
 export interface ApiResponse<T> {
   message?: string;
   data: T;
+  user?: {
+    id: string;
+    username: string;
+    roles: string[];
+  };
 }
 
 // User model
@@ -71,6 +76,7 @@ export interface Order {
   userId?: string;
   productId: string;
   productName?: string;
+  price?: number;
   status: "pending" | "processing" | "completed";
 }
 

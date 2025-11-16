@@ -9,7 +9,7 @@ import "./App.css";
 export function App() {
   const [activeTab, setActiveTab] = useState<
     "users" | "products" | "orders" | "health"
-  >("users");
+  >("products");
   const [isLight, setIsLight] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -122,6 +122,16 @@ export function App() {
               Users
             </button>
           )}
+
+          {userRole === "admin" && (
+          <button
+            className={activeTab === "health" ? "active" : ""}
+            onClick={() => setActiveTab("health")}
+          >
+            Health Check
+          </button>
+          )
+          }
           <button
             className={activeTab === "products" ? "active" : ""}
             onClick={() => setActiveTab("products")}
@@ -134,12 +144,6 @@ export function App() {
           >
             Orders
           </button>
-          <button
-            className={activeTab === "health" ? "active" : ""}
-            onClick={() => setActiveTab("health")}
-          >
-            Health Check
-          </button>
         </nav>
       </header>
 
@@ -151,7 +155,7 @@ export function App() {
       </main>
 
       <button
-        style={{ width: "fit-content", alignSelf: "center", marginTop: 10 }}
+        className="logout"
         onClick={handleLogout}
       >
         Logout
