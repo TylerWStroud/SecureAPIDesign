@@ -111,6 +111,7 @@ h1 {
   .theme-toggle {
     position: relative;
     right: auto;
+    padding-bottom: 1rem;
   }
 }
 

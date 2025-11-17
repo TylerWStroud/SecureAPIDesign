@@ -16,16 +16,24 @@ const app = express();
 
 await connectDB();
 
-// CORS configuration for production
+// CORS configuration for production and development
 const allowedOrigins = [
-  'http://localhost:5173',  // local development
-  'https://secureapidemo.vercel.app'  // production frontend
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'https://secureapidemo.vercel.app'
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, Postman, or curl)
     if (!origin) return callback(null, true);
+
+    // In development, allow all localhost origins
+    if (process.env.NODE_ENV === 'development' && origin && origin.includes('localhost')) {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
