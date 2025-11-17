@@ -16,7 +16,26 @@ const app = express();
 
 await connectDB();
 
-app.use(cors());
+// CORS configuration for production
+const allowedOrigins = [
+  'http://localhost:5173',  // local development
+  'https://secureapidemo.vercel.app'  // production frontend
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, Postman, or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(rateLimiter);
 
