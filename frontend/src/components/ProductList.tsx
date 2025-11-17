@@ -3,15 +3,6 @@ import { productService, orderService, type Product } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-// interface Product {
-//   _id?: string;
-//   id?: string;
-//   name: string;
-//   price: number;
-//   stock?: number;
-//   description?: string;
-// }
-
 export const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [name, setName] = useState("");

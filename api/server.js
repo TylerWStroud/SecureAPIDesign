@@ -156,12 +156,6 @@ app.get("/health", authenticate, requireRole("admin"), async (_req, res) => {
   const statusCode = healthStatus.status === "healthy" ? 200 : 503;
   res.status(statusCode).json(healthStatus);
 
-  // OLD STATUS CHECK CODE
-  // res.json({
-  //   status: "healthy",
-  //   timestamp: new Date().toISOString(),
-  //   uptime: `${Math.round(process.uptime())}s`
-  // })
 });
 
 // Routes

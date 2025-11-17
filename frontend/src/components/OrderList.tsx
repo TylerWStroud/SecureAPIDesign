@@ -3,16 +3,6 @@ import { orderService, productService, type Product, type Order } from "../servi
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-// interface Order {
-//   _id?: string;
-//   id?: string;
-//   orderNumber?: string;
-//   productId: string;
-//   productName?: string;
-//   status: string;
-// }
-
-
 export const OrderList: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);

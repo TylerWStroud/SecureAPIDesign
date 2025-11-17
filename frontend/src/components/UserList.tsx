@@ -3,13 +3,6 @@ import { userService, type User } from "../services/api";
 import RefreshButton from "./RefreshButton";
 import "./Components.css";
 
-// interface User {
-//   _id?: string;
-//   id?: string;
-//   username: string;
-//   roles?: string[];
-// }
-
 export const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [username, setUsername] = useState("");
