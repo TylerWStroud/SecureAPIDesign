@@ -4,6 +4,7 @@ import { ProductList } from "./components/ProductList";
 import { OrderList } from "./components/OrderList";
 import { HealthCheck } from "./components/HealthCheck";
 import { Login } from "./components/Login";
+import { SignUp } from "./components/SignUp";
 import "./App.css";
 
 export function App() {
@@ -13,6 +14,8 @@ export function App() {
   const [isLight, setIsLight] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [authView, setAuthView] = useState<"login" | "signup">("login");
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   // Check token and decode basic info
   useEffect(() => {
@@ -83,7 +86,22 @@ export function App() {
     setUserRole(null);
   };
 
-  // Show login if not authenticated
+  const handleSignUpSuccess = () => {
+    setSignUpSuccess(true);
+    setAuthView("login");
+  };
+
+  const handleSwitchToLogin = () => {
+    setAuthView("login");
+    setSignUpSuccess(false);
+  };
+
+  const handleSwitchToSignUp = () => {
+    setAuthView("signup");
+    setSignUpSuccess(false);
+  };
+
+  // Show login/signup if not authenticated
   if (!isAuthenticated) {
     return (
       <div className="App">
@@ -96,7 +114,22 @@ export function App() {
           </nav>
         </header>
         <main>
-          <Login onLoginSuccess={handleLoginSuccess} />
+          {signUpSuccess && authView === "login" && (
+            <div className="success-message">
+              Account created successfully! Please log in with your credentials.
+            </div>
+          )}
+          {authView === "login" ? (
+            <Login
+              onLoginSuccess={handleLoginSuccess}
+              onSwitchToSignUp={handleSwitchToSignUp}
+            />
+          ) : (
+            <SignUp
+              onSignUpSuccess={handleSignUpSuccess}
+              onSwitchToLogin={handleSwitchToLogin}
+            />
+          )}
         </main>
       </div>
     );
