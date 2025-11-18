@@ -58,7 +58,6 @@ export const Login = ({ onLoginSuccess, onSwitchToSignUp } : LoginProps) => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="admin or user"
             required
           />
         </div>
@@ -69,7 +68,6 @@ export const Login = ({ onLoginSuccess, onSwitchToSignUp } : LoginProps) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="admin123 or user123"
             required
           />
         </div>
