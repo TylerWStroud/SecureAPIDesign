@@ -33,8 +33,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("authToken");
-      window.location.href = "/login";
+      const token = localStorage.getItem("authToken");
+      // Only redirect if we had a valid session (logged in user getting 401)
+      // Don't redirect on login failure (no token or failed login attempt)
+      if (token) {
+        localStorage.removeItem("authToken");
+        localStorage.setItem("sessionExpired", "Your session has expired. Please log in again.");
+        window.location.reload(); // Reload to show login screen
+      }
     }
     console.error("API Error:", error.response?.data || error.message);
     return Promise.reject(error);
