@@ -55,8 +55,10 @@ export const OrderList: React.FC = () => {
       console.error("Order creation error:", err);
       if (err.response?.status === 403) {
         setWarning("You do not have permission to create an order.");
+        setTimeout(() => setWarning(null), 3000);
       } else {
         setError("Failed to create order.");
+        setTimeout(() => setError(null), 3000);
       }
     } finally {
       setCreating(false);
@@ -81,8 +83,10 @@ export const OrderList: React.FC = () => {
       console.error("Delete order error:", err);
       if (err.response?.status === 403) {
         setWarning("You cannot delete orders as a regular user.");
+        setTimeout(() => setWarning(null), 3000);
       } else {
         setError("Failed to delete order.");
+        setTimeout(() => setError(null), 3000);
       }
       setShowConfirm(false);
     }
@@ -106,10 +110,32 @@ export const OrderList: React.FC = () => {
       </div>
 
       {warning && (
-        <div style={{ color: "orange", marginBottom: "1rem" }}>{warning}</div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div style={{ color: "orange", marginBottom: "1rem" }}>{warning}</div>
+            <button
+              className="cancel-btn"
+              onClick={() => setWarning(null)}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
       {error && (
-        <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
+            <button
+              className="cancel-btn"
+              onClick={() => setError(null)}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
 
       {!isAdmin && (

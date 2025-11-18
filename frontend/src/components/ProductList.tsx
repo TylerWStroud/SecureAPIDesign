@@ -61,8 +61,10 @@ export const ProductList: React.FC = () => {
       console.error("Create product error:", err);
       if (err.response?.status === 403) {
         setWarning("You cannot add a product as a regular user.");
+        setTimeout(() => setWarning(null), 3000);
       } else {
         setError("Failed to create product.");
+        setTimeout(() => setError(null), 3000);
       }
     } finally {
       setCreating(false);
@@ -87,8 +89,10 @@ export const ProductList: React.FC = () => {
       console.error("Delete product error:", err);
       if (err.response?.status === 403) {
         setWarning("You cannot delete products as a regular user.");
+        setTimeout(() => setWarning(null), 3000);
       } else {
         setError("Failed to delete product.");
+        setTimeout(() => setError(null), 3000);
       }
       setShowConfirm(false);
     }
@@ -110,13 +114,19 @@ export const ProductList: React.FC = () => {
       console.error("Order creation error:", err);
       if (err.response?.status === 403) {
         setWarning("You do not have permission to create orders.");
+        // Clear warning after 3 seconds
+        setTimeout(() => setWarning(null), 3000);
       } else if (
         err.response?.status === 400 &&
         err.response?.data?.error === "Product is out of stock"
       ) {
         setError("This product is out of stock!");
+        // Clear error after 3 seconds
+        setTimeout(() => setError(null), 3000);
       } else {
         setError("Failed to place order.");
+        // Clear error after 3 seconds
+        setTimeout(() => setError(null), 3000);
       }
     } finally {
       setOrderingProductId(null);
@@ -150,6 +160,13 @@ export const ProductList: React.FC = () => {
             >
               {successMessage}
             </div>
+            <button
+              className="cancel-btn"
+              onClick={() => setSuccessMessage(null)}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -159,6 +176,13 @@ export const ProductList: React.FC = () => {
             <div style={{ color: "orange", marginBottom: "1rem" }}>
               {warning}
             </div>
+            <button
+              className="cancel-btn"
+              onClick={() => setWarning(null)}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -166,6 +190,13 @@ export const ProductList: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal">
             <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
+            <button
+              className="cancel-btn"
+              onClick={() => setError(null)}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
