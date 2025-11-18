@@ -1,9 +1,2 @@
 # Ignore backend API - deployed separately on Render
 api/
-
-# Ignore root node_modules (only use frontend's)
-node_modules/
-
-# Ignore root package files
-package.json
-package-lock.json
