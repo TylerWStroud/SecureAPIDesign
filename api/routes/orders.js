@@ -14,7 +14,9 @@ router.get("/", authenticate, async (req, res) => {
 
   // If admin, return all orders; otherwise, filter by userId
   const query = isAdmin ? {} : { userId: req.user.id };
-  const orders = await Order.find(query).sort({ createdAt: -1 });
+  const orders = await Order.find(query)
+    .populate('userId', 'username')
+    .sort({ createdAt: -1 });
 
   res.json({ data: orders, user: req.user });
 });

@@ -79,6 +79,7 @@ export interface Product {
 export interface Order {
   _id?: string;
   orderNumber?: string;
+  userName?: string;
   userId?: string;
   productId: string;
   productName?: string;
