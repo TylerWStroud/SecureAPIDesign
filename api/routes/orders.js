@@ -21,10 +21,12 @@ router.get("/", authenticate, async (req, res) => {
   // Transform orders to have separate userId and username fields
   const transformedOrders = orders.map(order => {
     const orderObj = order.toObject();
+    // Handle both populated (object) and non-populated (string) userId
+    const isPopulated = orderObj.userId && typeof orderObj.userId === 'object';
     return {
       ...orderObj,
-      username: orderObj.userId?.username,
-      userId: orderObj.userId?._id || orderObj.userId
+      username: isPopulated ? orderObj.userId.username : null,
+      userId: isPopulated ? orderObj.userId._id.toString() : orderObj.userId
     };
   });
 
