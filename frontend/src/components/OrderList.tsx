@@ -185,7 +185,6 @@ export const OrderList: React.FC = () => {
               <h3>{o.orderNumber || `Order #${o._id}`}</h3>
               <p>Product: {o.productName || o.productId}</p>
               {o.price !== undefined && <p>Price: ${o.price.toFixed(2)}</p>}
-              {isAdmin && <p>User: {o.username || 'Unknown'}</p>}
               {isAdmin && <p>User ID: {o.userId}</p>}
               <p>Status: {o.status}</p>
               {isAdmin && (
