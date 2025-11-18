@@ -30,17 +30,30 @@ router.post(
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const { productId, status } = req.body;
-    const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ error: "Product not found" });
 
-    // Check if product is in stock
-    if (product.stock <= 0) {
+    // Atomically decrement stock only if stock > 0
+    // This prevents race conditions by making the check and decrement atomic
+    const product = await Product.findOneAndUpdate(
+      {
+        _id: productId,
+        stock: { $gt: 0 }  // Only update if stock > 0
+      },
+      {
+        $inc: { stock: -1 }  // Atomically decrement by 1
+      },
+      {
+        new: true  // Return the updated document
+      }
+    );
+
+    // If product is null, either it doesn't exist or is out of stock
+    if (!product) {
+      const productExists = await Product.findById(productId);
+      if (!productExists) {
+        return res.status(404).json({ error: "Product not found" });
+      }
       return res.status(400).json({ error: "Product is out of stock" });
     }
-
-    // Decrement stock by 1
-    product.stock -= 1;
-    await product.save();
 
     const order = await Order.create({
       userId: req.user.id,
@@ -77,12 +90,11 @@ router.delete(
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: "Order not found" });
 
-    // Increment the product stock back by 1
-    const product = await Product.findById(order.productId);
-    if (product) {
-      product.stock += 1;
-      await product.save();
-    }
+    // Atomically increment the product stock back by 1
+    await Product.findByIdAndUpdate(
+      order.productId,
+      { $inc: { stock: 1 } }  // Atomically increment by 1
+    );
 
     // Delete the order
     await Order.findByIdAndDelete(req.params.id);
