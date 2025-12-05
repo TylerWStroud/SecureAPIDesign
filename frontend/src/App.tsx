@@ -5,6 +5,7 @@ import { OrderList } from "./components/OrderList";
 import { HealthCheck } from "./components/HealthCheck";
 import { Login } from "./components/Login";
 import { SignUp } from "./components/SignUp";
+import { EmailVerification }  from "./components/EmailVerification";
 import "./App.css";
 
 export function App() {
@@ -16,6 +17,7 @@ export function App() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [authView, setAuthView] = useState<"login" | "signup">("login");
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // Check token and decode basic info
   useEffect(() => {
@@ -34,6 +36,16 @@ export function App() {
     } else {
       setIsAuthenticated(false);
       setUserRole(null);
+    }
+  }, []);
+
+  // Check for email verification token in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (token) {
+      setIsVerifying(true);
     }
   }, []);
 
@@ -59,25 +71,25 @@ export function App() {
   const toggleTheme = () => setIsLight(!isLight);
 
   const handleLoginSuccess = () => {
-  setIsAuthenticated(true);
-  const token = localStorage.getItem("authToken");
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const role = payload?.roles?.[0] || null;
-      setUserRole(role);
+    setIsAuthenticated(true);
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const role = payload?.roles?.[0] || null;
+        setUserRole(role);
 
-      // Automatically select the correct starting tab
-      if (role === "admin") {
-        setActiveTab("users");
-      } else {
-        setActiveTab("products");
+        // Automatically select the correct starting tab
+        if (role === "admin") {
+          setActiveTab("users");
+        } else {
+          setActiveTab("products");
+        }
+      } catch (e) {
+        console.warn("Failed to decode token:", e);
       }
-    } catch (e) {
-      console.warn("Failed to decode token:", e);
     }
-  }
-};
+  };
 
 
   const handleLogout = () => {
@@ -91,6 +103,7 @@ export function App() {
     setAuthView("login");
   };
 
+
   const handleSwitchToLogin = () => {
     setAuthView("login");
     setSignUpSuccess(false);
@@ -103,10 +116,35 @@ export function App() {
 
   // Show login/signup if not authenticated
   if (!isAuthenticated) {
+    // show email verification if token is in URL
+    if (isVerifying){
+       return (
+        <div className="App">
+          <header className="App-header">
+            <h1>Secure RESTful API</h1>
+            <nav className="theme-toggle">
+              <button onClick={toggleTheme}>
+                {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
+              </button>
+            </nav>
+          </header>
+          <main>
+            <EmailVerification
+              onVerificationComplete={() => {
+                setIsVerifying(false);
+                setAuthView("login");
+              }}
+            />
+          </main>
+        </div>
+      );
+    }
+
+    // show login/signup forms
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Secure API Gateway</h1>
+          <h1>Secure RESTful API</h1>
           <nav className="theme-toggle">
             <button onClick={toggleTheme}>
               {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
@@ -116,7 +154,7 @@ export function App() {
         <main>
           {signUpSuccess && authView === "login" && (
             <div className="success-message">
-              Account created successfully! Please log in with your credentials.
+              Account created successfully! Please check your email to verify your account before logging in.
             </div>
           )}
           {authView === "login" ? (
@@ -134,6 +172,41 @@ export function App() {
       </div>
     );
   }
+    // return (
+    //   <div className="App">
+    //     <header className="App-header">
+    //       <h1>Secure RESTful API</h1>
+    //       <nav className="theme-toggle">
+    //         <button onClick={toggleTheme}>
+    //           {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
+    //         </button>
+    //       </nav>
+    //     </header>
+    //     <main>
+    //       <EmailVerification onVerificationComplete={() => {
+    //         setIsVerifying(false);
+    //         setAuthView("login");
+    //       }} />
+    //       {signUpSuccess && authView === "login" && (
+    //         <div className="success-message">
+    //           Account created successfully! Please log in with your credentials.
+    //         </div>
+    //       )}
+    //       {authView === "login" ? (
+    //         <Login
+    //           onLoginSuccess={handleLoginSuccess}
+    //           onSwitchToSignUp={handleSwitchToSignUp}
+    //         />
+    //       ) : (
+    //         <SignUp
+    //           onSignUpSuccess={handleSignUpSuccess}
+    //           onSwitchToLogin={handleSwitchToLogin}
+    //         />
+    //       )}
+    //     </main>
+    //   </div>
+    // );
+    // }
 
   return (
     <div className="App">

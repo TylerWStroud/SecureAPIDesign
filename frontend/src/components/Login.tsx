@@ -7,7 +7,7 @@ interface LoginProps {
   onSwitchToSignUp: () => void;
 }
 
-export const Login = ({ onLoginSuccess, onSwitchToSignUp } : LoginProps) => {
+export const Login = ({ onLoginSuccess, onSwitchToSignUp }: LoginProps) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -33,8 +33,15 @@ export const Login = ({ onLoginSuccess, onSwitchToSignUp } : LoginProps) => {
       if (!token) throw new Error("No token in response");
       localStorage.setItem("authToken", token);
       onLoginSuccess();
-    } catch (err) {
-      setError("Invalid credentials. Please try again.");
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setError(
+          err.response?.data?.err ||
+            "Please verify your email before logging in."
+        );
+      } else {
+        setError("Invalid credentials. Please try again.");
+      }
       console.error("Login error:", err);
     } finally {
       setLoading(false);
