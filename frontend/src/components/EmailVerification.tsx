@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import "./Components.css";
 
-interface EmailVerificationProps{
-    onVerificationComplete: () => void;
+interface EmailVerificationProps {
+  onVerificationComplete: () => void;
 }
 
-export const EmailVerification = ({onVerificationComplete} : EmailVerificationProps) => {
+export const EmailVerification = ({
+  onVerificationComplete,
+}: EmailVerificationProps) => {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -31,7 +33,11 @@ export const EmailVerification = ({onVerificationComplete} : EmailVerificationPr
         );
 
         // clear URL parameters
-        window.history.replaceState({}, document.title, window.location.pathname);
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
 
         // Redirect login after 3 seconds
         setTimeout(() => {
@@ -57,16 +63,16 @@ export const EmailVerification = ({onVerificationComplete} : EmailVerificationPr
       )}
 
       {status === "success" && (
-        <div style={{ color: "green"}}>
-            <p>{message}</p>
-            <p>Redirecting to login...</p>
+        <div style={{ color: "green" }}>
+          <p>{message}</p>
+          <p>Redirecting to login...</p>
         </div>
       )}
 
       {status === "error" && (
-        <div style={{ color: "red"}}>
-            <p>{message}</p>
-            <button onClick={onVerificationComplete}>Return to login</button>
+        <div style={{ color: "red" }}>
+          <p>{message}</p>
+          <button onClick={onVerificationComplete}>Return to login</button>
         </div>
       )}
     </div>
