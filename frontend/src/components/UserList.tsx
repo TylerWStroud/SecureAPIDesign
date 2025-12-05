@@ -21,7 +21,7 @@ export const UserList: React.FC = () => {
     e.preventDefault();
     if (!username || !password) return;
     try {
-      await userService.createUser({ username, password });
+      await userService.createUser({ username, password, firstName: "", lastName: "", email: "" });
       setUsername("");
       setPassword("");
       fetchUsers();
