@@ -1,4 +1,4 @@
-import AuditLog from "auditlog-logger";
+import AuditLog from "../models/AuditLog.js";
 
 /**
  * Log an audit event

@@ -10,6 +10,7 @@ import userRoutes from "./routes/users.js";
 import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
 import mongoose from "mongoose";
+import auditLogsRouter from "./routes/auditLogs.js";
 
 dotenv.config();
 const app = express();
@@ -79,6 +80,7 @@ app.use((req, res, next) => {
 
   next();
 });
+
 
 // Helper function to format uptime
 const formatUptime = (seconds) => {
@@ -170,6 +172,7 @@ app.use("/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/audit-logs", auditLogsRouter);
 
 // Fallback
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));

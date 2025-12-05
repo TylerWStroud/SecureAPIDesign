@@ -117,6 +117,22 @@ export interface HealthStatus {
   };
 }
 
+// Audit Log model
+export interface AuditLog{
+  _id: string;
+  userId?: string;
+  username?: string;
+  action: string;
+  details: any;
+  ipAddress?: string;
+  userAgent?: string;
+  statusCode?: number;
+  success: boolean;
+  errorMessage?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // === API SERVICES ===
 // --- Users ---
 export const userService = {
@@ -147,3 +163,9 @@ export const orderService = {
 export const healthService = {
   checkHealth: () => api.get<HealthStatus>("/health"),
 };
+
+// --- Audit Logs ---
+export const auditLogService = {
+  getAuditLogs: (params?: {limit?: number; offset?: number; action?: string; userId?: string}) =>
+    api.get<ApiResponse<AuditLog[]>>("/api/audit-logs", { params }),
+}

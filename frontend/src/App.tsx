@@ -5,12 +5,13 @@ import { OrderList } from "./components/OrderList";
 import { HealthCheck } from "./components/HealthCheck";
 import { Login } from "./components/Login";
 import { SignUp } from "./components/SignUp";
-import { EmailVerification }  from "./components/EmailVerification";
+import { EmailVerification } from "./components/EmailVerification";
+import { AuditLogList } from "./components/AuditLogList";
 import "./App.css";
 
 export function App() {
   const [activeTab, setActiveTab] = useState<
-    "users" | "products" | "orders" | "health"
+    "users" | "products" | "orders" | "health" | "audit-logs"
   >("products");
   const [isLight, setIsLight] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -91,7 +92,6 @@ export function App() {
     }
   };
 
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsAuthenticated(false);
@@ -102,7 +102,6 @@ export function App() {
     setSignUpSuccess(true);
     setAuthView("login");
   };
-
 
   const handleSwitchToLogin = () => {
     setAuthView("login");
@@ -117,8 +116,8 @@ export function App() {
   // Show login/signup if not authenticated
   if (!isAuthenticated) {
     // show email verification if token is in URL
-    if (isVerifying){
-       return (
+    if (isVerifying) {
+      return (
         <div className="App">
           <header className="App-header">
             <h1>Secure RESTful API</h1>
@@ -144,7 +143,7 @@ export function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Secure RESTful API</h1>
+          <h1>Secure API Gateway</h1>
           <nav className="theme-toggle">
             <button onClick={toggleTheme}>
               {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
@@ -154,7 +153,8 @@ export function App() {
         <main>
           {signUpSuccess && authView === "login" && (
             <div className="success-message">
-              Account created successfully! Please check your email to verify your account before logging in.
+              Account created successfully! Please check your email to verify
+              your account before logging in.
             </div>
           )}
           {authView === "login" ? (
@@ -172,46 +172,46 @@ export function App() {
       </div>
     );
   }
-    // return (
-    //   <div className="App">
-    //     <header className="App-header">
-    //       <h1>Secure RESTful API</h1>
-    //       <nav className="theme-toggle">
-    //         <button onClick={toggleTheme}>
-    //           {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
-    //         </button>
-    //       </nav>
-    //     </header>
-    //     <main>
-    //       <EmailVerification onVerificationComplete={() => {
-    //         setIsVerifying(false);
-    //         setAuthView("login");
-    //       }} />
-    //       {signUpSuccess && authView === "login" && (
-    //         <div className="success-message">
-    //           Account created successfully! Please log in with your credentials.
-    //         </div>
-    //       )}
-    //       {authView === "login" ? (
-    //         <Login
-    //           onLoginSuccess={handleLoginSuccess}
-    //           onSwitchToSignUp={handleSwitchToSignUp}
-    //         />
-    //       ) : (
-    //         <SignUp
-    //           onSignUpSuccess={handleSignUpSuccess}
-    //           onSwitchToLogin={handleSwitchToLogin}
-    //         />
-    //       )}
-    //     </main>
-    //   </div>
-    // );
-    // }
+  // return (
+  //   <div className="App">
+  //     <header className="App-header">
+  //       <h1>Secure RESTful API</h1>
+  //       <nav className="theme-toggle">
+  //         <button onClick={toggleTheme}>
+  //           {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
+  //         </button>
+  //       </nav>
+  //     </header>
+  //     <main>
+  //       <EmailVerification onVerificationComplete={() => {
+  //         setIsVerifying(false);
+  //         setAuthView("login");
+  //       }} />
+  //       {signUpSuccess && authView === "login" && (
+  //         <div className="success-message">
+  //           Account created successfully! Please log in with your credentials.
+  //         </div>
+  //       )}
+  //       {authView === "login" ? (
+  //         <Login
+  //           onLoginSuccess={handleLoginSuccess}
+  //           onSwitchToSignUp={handleSwitchToSignUp}
+  //         />
+  //       ) : (
+  //         <SignUp
+  //           onSignUpSuccess={handleSignUpSuccess}
+  //           onSwitchToLogin={handleSwitchToLogin}
+  //         />
+  //       )}
+  //     </main>
+  //   </div>
+  // );
+  // }
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Secure API Gateway</h1>
+        <h1>Secure RESTful API</h1>
         <nav className="theme-toggle">
           <button onClick={toggleTheme}>
             {isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
@@ -230,14 +230,22 @@ export function App() {
           )}
 
           {userRole === "admin" && (
-          <button
-            className={activeTab === "health" ? "active" : ""}
-            onClick={() => setActiveTab("health")}
-          >
-            Health Check
-          </button>
-          )
-          }
+            <button
+              className={activeTab === "health" ? "active" : ""}
+              onClick={() => setActiveTab("health")}
+            >
+              Health Check
+            </button>
+          )}
+
+          {userRole === "admin" && (
+            <button
+              className={activeTab === "audit-logs" ? "active" : ""}
+              onClick={() => setActiveTab("audit-logs")}
+            >
+              Activity Logs
+            </button>
+          )}
           <button
             className={activeTab === "products" ? "active" : ""}
             onClick={() => setActiveTab("products")}
@@ -258,12 +266,10 @@ export function App() {
         {activeTab === "products" && <ProductList />}
         {activeTab === "orders" && <OrderList />}
         {activeTab === "health" && <HealthCheck />}
+        {activeTab === "audit-logs" && userRole === "admin" && <AuditLogList />}
       </main>
 
-      <button
-        className="logout"
-        onClick={handleLogout}
-      >
+      <button className="logout" onClick={handleLogout}>
         Logout
       </button>
     </div>
